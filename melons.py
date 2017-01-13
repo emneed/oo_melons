@@ -1,5 +1,6 @@
 """This file should have our order classes in it."""
 import random
+import time
 
 
 class AbstractMelonOrder(object):
@@ -15,8 +16,15 @@ class AbstractMelonOrder(object):
         self.country_code = country_code
 
     def get_base_price(self):
+        hour = time.localtime().tm_hour
+        day = time.localtime().tm_wday
+        base_price = random.randint(5, 9)
+        hour = 10
+        day = 3
 
-        return random.randint(5, 9)
+        if (hour >= 8 and hour <= 11) and (day < 5):
+            return base_price + 4
+        return base_price
 
     def get_total(self):
         """Calculate price."""
