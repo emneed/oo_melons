@@ -3,7 +3,16 @@ import random
 import time
 
 
-class AbstractMelonOrder(object):
+class TooManyMelonsError(ValueError):
+
+    #def __init__(self, msg):
+        #self.msg = msg
+
+    def __str__(self):
+        return repr(self.message)
+
+
+class AbstractMelonOrder(TooManyMelonsError, object):
     """Super class for all melon types"""
 
     # tax = 0.10
@@ -11,6 +20,9 @@ class AbstractMelonOrder(object):
     def __init__(self, species, qty, melon_type='secret', country_code=None):
         self.species = species
         self.qty = qty
+
+        self.melon_count(qty)
+
         self.shipped = False
         self.type = melon_type
         self.country_code = country_code
@@ -19,8 +31,6 @@ class AbstractMelonOrder(object):
         hour = time.localtime().tm_hour
         day = time.localtime().tm_wday
         base_price = random.randint(5, 9)
-        hour = 10
-        day = 3
 
         if (hour >= 8 and hour <= 11) and (day < 5):
             return base_price + 4
@@ -40,6 +50,10 @@ class AbstractMelonOrder(object):
         """Set shipped to true."""
 
         self.shipped = True
+
+    def melon_count(self, qty):
+        if qty > 100:
+            raise TooManyMelonsError("No more then 100 melons!")
 
 
 class DomesticMelonOrder(AbstractMelonOrder):
@@ -82,3 +96,4 @@ class GovernmentMelonOrder(AbstractMelonOrder):
 
     def mark_inspection(self, passed):
         self.passed_inspection = passed
+
